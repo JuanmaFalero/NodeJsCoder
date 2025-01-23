@@ -78,15 +78,35 @@ class ProductManager {
         return "no se encontro el pdocuto";
 
     }
-    deleteProduct(id){
-        const index = this.products.findIndex(item => item.id === id);
-        if (index !== -1){
-            this.products = this.products.filter(item => item.id !== id);
-            this.createFile();
-            return "producto eliminado"
+//    deleteProduct(id){
+//        const index = this.products.findIndex(item => item.id === id);
+//        if (index !== -1){
+//            this.products = this.products.filter(item => item.id !== id);
+//            //this.createFile();
+//            return "producto eliminado"
+//        }
+//        return "no pudimos encontrar el producto con ese id"
+//    }
+
+async deleteProduct(id) {
+    try {
+        const arrayProducts = await this.readFile();
+        const index = arrayProducts.findIndex(prod => prod.id == id);
+
+        if (index != -1) {
+            arrayProducts.splice(index, 1);
+            this.createFile(arrayProducts);
+            console.log("Producto eliminado con exito!");
+            console.log(arrayProducts);
+        } else {
+            console.log("No se encontro el producto");
         }
-        return "no pudimos encontrar el producto con ese id"
+    } catch (error) {
+        console.log("Error al eliminar el producto", error);
+        throw error;
     }
+}
+
 }
 
 

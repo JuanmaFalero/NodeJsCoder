@@ -32,11 +32,22 @@ app.use("/api/carts", cRouter);
 
 const expressServer = app.listen(PORT, () => {console.log(`Escuchando desde el puerto ${PORT}`)})
 const socketServer = new Server(expressServer);
+
+
 socketServer.on("connection", Socket => {
     const productos = p.getProducts();
     Socket.emit("productos", productos);
-    Socket.on("agregarProducto", producto =>{
+    
+     Socket.on("agregarProducto", producto =>{
         const result = p.addProduct({...producto})
+        socketServer.sockets.emit("productos", productos)
         console.log({result})
     })
+    Socket.on("eliminarProducto",  (id) => {
+        const dele = p.deleteProduct(id);
+        socketServer.sockets.emit("productos", productos)
+        console.log(id) ;
+ 
+    });
 })
+
