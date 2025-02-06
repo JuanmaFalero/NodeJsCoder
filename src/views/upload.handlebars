@@ -1,0 +1,27 @@
+<div class="div-form">
+
+    <h2>agregar producto</h2>
+    <form id="producto-form" class="producto-form-agregar">
+        <label for="title">Título</label>
+        <input type="text" id="title" name="title" required>
+
+        <label for="description">Descripción</label>
+        <input type="text" id="description" name="description" required>
+
+        <label for="price">Precio</label>
+        <input type="number" id="price" name="price" required min="0">
+
+        <label for="code">Código</label>
+        <input type="text" id="code" name="code" required>
+
+        <label for="stock">Stock</label>
+        <input type="number" id="stock" name="stock" required min="0">
+
+        <label for="category">category</label>
+        <input type="text" id="category" name="category" required>
+
+        <button type="submit">Agregar Producto </button>
+    </form>
+</div>
+<script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+<script src="/js/index.js"></script> 

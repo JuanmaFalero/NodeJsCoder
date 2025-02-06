@@ -4,14 +4,12 @@ import {engine} from "express-handlebars";
 import pRouter from "./routes/products.router.js";
 import cRouter from "./routes/carts.router.js";
 import views from "./routes/views.router.js";
-import __dirname from "./utlis.js";
-import ProductManager from "./productManager.js";
-
+import __dirname from "./utils.js";
+import "./database.js";
+import { addProductService, getProductsService } from "./services/products.services.js";
 
 const app = express();
 const PORT = 8080;
-
-const p = new ProductManager();
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
@@ -21,33 +19,24 @@ app.engine("handlebars", engine());
 app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars");
 
-
-// app.get("/", (req, res) => {
-//     return res.render("home")
-// })
 app.use("/", views);
 app.use("/api/products", pRouter);
 app.use("/api/carts", cRouter);
 
 
 const expressServer = app.listen(PORT, () => {console.log(`Escuchando desde el puerto ${PORT}`)})
-const socketServer = new Server(expressServer);
+const io = new Server(expressServer);
+io.on("connection", async (socket) => {
 
-
-socketServer.on("connection", Socket => {
-    const productos = p.getProducts();
-    Socket.emit("productos", productos);
-    
-     Socket.on("agregarProducto", producto =>{
-        const result = p.addProduct({...producto})
-        socketServer.sockets.emit("productos", productos)
-        console.log({result})
+    const {payload} = await getProductsService({});
+    const productos = payload;
+    socket.emit("productos", payload);    
+    socket.on("agregarProducto", async producto =>{
+        const newProduct = await addProductService({...producto});
+        if (newProduct){
+            productos.push(newProduct)
+        }
+        socket.emit("productos", productos);
     })
-    Socket.on("eliminarProducto",  (id) => {
-        const dele = p.deleteProduct(id);
-        socketServer.sockets.emit("productos", productos)
-        console.log(id) ;
- 
-    });
-})
 
+})

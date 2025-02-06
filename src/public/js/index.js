@@ -6,7 +6,7 @@ socket.on("productos", productos => {
     productos.forEach(producto => {
         const row = tbody.insertRow();
         row.innerHTML = `
-                <td>${producto.id}</td>
+                <td>${producto._id}</td>
                 <td>${producto.title}</td> 
                 <td>${producto.description}</td>
                 <td>${producto.price}</td>
@@ -14,21 +14,10 @@ socket.on("productos", productos => {
                 <td>${producto.code}</td>
                 <td>${producto.stock}</td>
                 <td>${producto.category}</td>
-                <td><button class="delete-btn" data-id="${producto.id}">Eliminar</button></td>
                 `;
     })
-    const deleteButtons = document.querySelectorAll(".delete-btn");
-    deleteButtons.forEach(button => {
-        button.addEventListener("click", (event) => {
-            const productoId = event.target.getAttribute("data-id");
-            eliminarProducto(productoId);
-        });
-    });
-});   
-function eliminarProducto(id) {
-    // Aquí puedes emitir un evento al servidor para que elimine el producto
-    socket.emit("eliminarProducto", id);
-}
+});
+
 const formulario = document.getElementById("producto-form");
 
 formulario.addEventListener("submit", function (event) {
@@ -46,8 +35,7 @@ formulario.addEventListener("submit", function (event) {
         price: precio,
         code: codigo,
         stock: stock,
-        category:category,
-
+        category: category,
     };
     socket.emit("agregarProducto", producto);
     formulario.reset();
