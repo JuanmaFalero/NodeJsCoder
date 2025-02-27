@@ -39,4 +39,4 @@ formulario.addEventListener("submit", function (event) {
     };
     socket.emit("agregarProducto", producto);
     formulario.reset();
-})
+});

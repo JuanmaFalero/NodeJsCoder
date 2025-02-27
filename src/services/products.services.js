@@ -80,4 +80,4 @@ export const deleteProductService = async (pid) => {
         console.log("deleteProductService error", error);
         throw error;
     }
-}
+};
